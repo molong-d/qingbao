@@ -1,13 +1,16 @@
+# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
+# Virtual environments
 .venv/
 venv/
 env/
 
+# Local database / runtime data
 *.db
 *.sqlite
 *.sqlite3
@@ -15,14 +18,17 @@ intelligence_hub/data/*.db
 intelligence_hub/data/*.sqlite
 intelligence_hub/data/*.sqlite3
 
+# Secrets
 .env
 *.key
 *.pem
 
+# Runtime/cache/logs
 .cache/
 tmp/
 logs/
 
+# OS / editor
 .DS_Store
 .vscode/
 .idea/
