@@ -156,3 +156,57 @@ git restore --staged .
 - `bash scripts/run_once.sh`: PASS。
 - `bash scripts/inspect.sh`: PASS。
 - secret pattern scan: PASS，仅命中规则文本。
+
+## 12. V0.2.1 质量修复交接
+
+### 本轮完成
+
+- 版本更新为 `0.2.1`。
+- 默认日报保留 demo 数据，但明确标注 `demo 验证数据`。
+- 新增 `python -m intelligence_hub digest --today --exclude-demo`。
+- 新增 `sources.yaml` 配置 `exclude_demo_in_digest`。
+- 修复英文实体子串误判：ASCII 实体使用 token boundary，中文实体继续短语匹配。
+- 新增 HTML 文本清理，处理 HTML entity、`&nbsp;`/`&#160;`、`&#8230;` 和简单 HTML 标签。
+- 优化 suggested action：高机会分先走 `opportunity_action_thresholds`，使强机会项可以进入 A5/A6/A7。
+- `fetch-once` 输出每个 source 的 `status` 和 `items` 数量；单源失败继续 warning 降级。
+- 日报缺摘要时显示 `暂无摘要，不建议直接采用该条判断`。
+
+### 修改文件
+
+- `README.md`
+- `intelligence_hub/__init__.py`
+- `intelligence_hub/config/scoring.yaml`
+- `intelligence_hub/config/sources.yaml`
+- `intelligence_hub/src/cli.py`
+- `intelligence_hub/src/digest.py`
+- `intelligence_hub/src/fetchers/arxiv.py`
+- `intelligence_hub/src/fetchers/github.py`
+- `intelligence_hub/src/fetchers/hn.py`
+- `intelligence_hub/src/fetchers/rss.py`
+- `intelligence_hub/src/fetchers/runner.py`
+- `intelligence_hub/src/scoring.py`
+- `intelligence_hub/src/text.py`
+- `tests/test_digest.py`
+- `tests/test_fetchers.py`
+- `tests/test_scoring.py`
+- `tests/test_text.py`
+
+### 验证结果
+
+- `python -m intelligence_hub status`: PASS，版本 `v0.2.1`。
+- `python -m intelligence_hub init-db`: PASS。
+- `python -m intelligence_hub seed-demo`: PASS。
+- `python -m intelligence_hub digest --today`: PASS。
+- `python -m intelligence_hub digest --today --exclude-demo`: PASS。
+- `python -m intelligence_hub fetch-once`: PASS，arXiv 本轮 429 失败但被 warning 降级，HN 和 MIT RSS 成功，总处理 15 条。
+- `python -m unittest discover -s tests`: PASS，`Ran 11 tests ... OK`。
+- `bash scripts/run_once.sh`: PASS。
+- `bash scripts/inspect.sh`: PASS。
+- `git diff --stat`: PASS，14 个 tracked 文件变化；另有 3 个新增 untracked 文件。
+
+### 限制
+
+- `fetch-once` 仍依赖公网源，不能承诺跨天结果、数量或可用性可复现。
+- RSS/arXiv/HN 清理是轻量文本清理，不是完整 HTML sanitizer。
+- `为什么重要` 仍基于规则和摘要，不做 LLM 总结。
+- scoring 仍是启发式规则，后续应通过人工反馈和日报复盘逐步校准权重。

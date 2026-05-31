@@ -21,7 +21,9 @@ class DigestTest(unittest.TestCase):
                 upsert_score(item_id, score_item(item))
                 path = Path(generate_daily(today=True))
                 self.assertTrue(path.exists())
-                self.assertIn("每日个人战略情报简报", path.read_text(encoding="utf-8"))
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("每日个人战略情报简报", text)
+                self.assertIn("demo 验证数据", text)
 
     def test_generate_daily_overwrites_same_day_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -38,6 +40,20 @@ class DigestTest(unittest.TestCase):
                 self.assertEqual(path, second_path)
                 self.assertEqual(first_size, second_path.stat().st_size)
                 self.assertEqual(second_path.read_text(encoding="utf-8").count(item.title), 3)
+
+    def test_generate_daily_can_exclude_demo(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / "test.db"
+            report_dir = Path(tmp) / "reports"
+            with patch("intelligence_hub.src.db.DB_PATH", db_path), patch("intelligence_hub.src.digest.REPORT_DIR", report_dir):
+                init_db(db_path)
+                item = demo_items()[0]
+                item_id = upsert_item(item)
+                upsert_score(item_id, score_item(item))
+                path = Path(generate_daily(today=True, exclude_demo=True))
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("Demo 条目: 已排除", text)
+                self.assertNotIn(item.title, text)
 
 
 if __name__ == "__main__":

@@ -11,3 +11,11 @@
 - Treat live `fetch-once` output as best-effort and environment-dependent. The reproducible baseline is the demo dataset and core chain tests; fetchers now print per-source counts to make live runs auditable.
 - Treat daily Markdown reports as runtime artifacts and ignore `intelligence_hub/reports/daily/*.md` in Git.
 - Move scoring baselines and blend weights into `scoring.yaml` to reduce hardcoded scoring policy in Python while keeping the algorithm simple.
+
+## 2026-05-31 V0.2.1 Quality Fix
+
+- Keep demo rows in the default digest for local verification, but explicitly label them as `demo 验证数据`; support `digest --today --exclude-demo` and `exclude_demo_in_digest` for cleaner reports.
+- Match ASCII/English entities with token boundaries to avoid false positives such as `Meta` matching `metadata`, `metal`, or `metamaterial`; keep Chinese phrase matching unchanged.
+- Add a small standard-library `clean_text` helper for fetchers and digest output so HTML entities and simple tags do not leak into reports.
+- Route high opportunity scores through configurable `opportunity_action_thresholds` before generic action score thresholds, so strong opportunity items can become A5/A6/A7.
+- Keep fetcher tests deterministic by testing runner degradation with patched fetchers; do not assert exact live public-source counts in unit tests.

@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 
 from intelligence_hub.src.classify import classify_item
@@ -28,12 +29,28 @@ def _recency_multiplier(published_at: str, scoring_cfg: dict) -> float:
     return decay["older"]
 
 
+def _is_ascii_phrase(value: str) -> bool:
+    return all(ord(ch) < 128 for ch in value)
+
+
 def _matches(needles: list[str], text: str) -> list[str]:
     text_lower = text.lower()
-    return sorted({needle for needle in needles if needle.lower() in text_lower})
+    hits = set()
+    for needle in needles:
+        needle_lower = needle.lower()
+        if _is_ascii_phrase(needle):
+            pattern = r"(?<![A-Za-z0-9_])" + re.escape(needle_lower) + r"(?![A-Za-z0-9_])"
+            if re.search(pattern, text_lower):
+                hits.add(needle)
+        elif needle_lower in text_lower:
+            hits.add(needle)
+    return sorted(hits)
 
 
-def suggest_action(action_score: float, scoring_cfg: dict) -> str:
+def suggest_action(action_score: float, opportunity_score: float, scoring_cfg: dict) -> str:
+    for row in scoring_cfg.get("opportunity_action_thresholds", []):
+        if opportunity_score >= row["min"]:
+            return row["action"]
     for row in scoring_cfg["action_thresholds"]:
         if action_score >= row["min"]:
             return row["action"]
@@ -91,5 +108,5 @@ def score_item(item: Item) -> Score:
         matched_keywords=matched_keywords,
         matched_entities=matched_entities,
         score_reason=reason,
-        suggested_action=suggest_action(action_score, scoring_cfg),
+        suggested_action=suggest_action(action_score, opportunity_score, scoring_cfg),
     )

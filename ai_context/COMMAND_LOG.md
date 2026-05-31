@@ -34,3 +34,27 @@
 - `python -m unittest discover -s tests` - ran updated unit tests.
 - `git status --ignored --short intelligence_hub/data intelligence_hub/reports/daily` - confirmed database and daily reports are ignored.
 - `python -c "from intelligence_hub.src.db import db_counts; print(db_counts())"` - checked database counts after repeated seed and fetch validation.
+
+## 2026-05-31 V0.2.1 Quality Fix
+
+- `sed -n '1,260p' intelligence_hub/src/digest.py` - reviewed digest rendering and demo handling.
+- `sed -n '1,260p' intelligence_hub/src/scoring.py` - reviewed entity matching and suggested action logic.
+- `sed -n '1,260p' intelligence_hub/src/cli.py` - reviewed CLI support for digest flags and fetch output.
+- `sed -n '1,260p' intelligence_hub/config/scoring.yaml` - reviewed scoring policy config.
+- `sed -n '1,220p' intelligence_hub/src/fetchers/rss.py` - reviewed RSS timeout and text handling.
+- `sed -n '1,220p' intelligence_hub/src/fetchers/arxiv.py` - reviewed arXiv timeout and text handling.
+- `sed -n '1,220p' intelligence_hub/src/fetchers/hn.py` - reviewed HN timeout and text handling.
+- `sed -n '1,200p' intelligence_hub/src/fetchers/runner.py` - reviewed single-source failure behavior.
+- `python -m unittest discover -s tests` - ran unit tests after V0.2.1 fixes.
+- `python -m intelligence_hub status` - verified CLI status on V0.2.1.
+- `python -m intelligence_hub init-db` - verified idempotent DB initialization.
+- `python -m intelligence_hub seed-demo` - verified demo seeding remains idempotent.
+- `python -m intelligence_hub digest --today` - generated default digest with demo labels.
+- `python -m intelligence_hub digest --today --exclude-demo` - verified demo exclusion flag.
+- `rg -n "Demo 条目|demo 验证数据" intelligence_hub/reports/daily/2026-05-31.md` - checked digest demo labeling/exclusion.
+- `python -m intelligence_hub fetch-once` - verified per-source status/count output and single-source failure degradation.
+- `bash scripts/run_once.sh` - verified one-shot core chain.
+- `bash scripts/inspect.sh` - verified status/opportunity inspection.
+- `git diff --stat` - reviewed tracked diff stat.
+- `git status --short` - reviewed working tree state.
+- `git ls-files --others --exclude-standard | sort` - listed new untracked V0.2.1 files.

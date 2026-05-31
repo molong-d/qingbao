@@ -126,3 +126,93 @@ None.
 - `git diff --stat`
   - Result: PASS
   - Output: `.gitignore | 1 +` because most project files are still untracked in this initial repository state.
+
+## 2026-05-31 V0.2.1 Quality Fix Validation
+
+### Fixes Verified
+
+- Demo and real data separation:
+  - Default `digest --today` keeps demo rows and labels them as `demo 验证数据`.
+  - `digest --today --exclude-demo` generated a report with `Demo 条目: 已排除`.
+  - `sources.yaml` now includes `exclude_demo_in_digest`.
+
+- Entity matching:
+  - Added tests confirming `Meta` does not match `metal`, `metadata`, or `metamaterial`.
+  - Added test confirming `Meta` still matches as a standalone English entity.
+
+- HTML text cleanup:
+  - Added `clean_text` helper using standard-library `html.unescape` and simple tag stripping.
+  - Added test for `&nbsp;`, `&#160;`, `&#8230;`, `&amp;`, and simple HTML tags.
+
+- Suggested action:
+  - Added configurable `opportunity_action_thresholds`.
+  - Added test confirming a high-opportunity personal item with `opportunity_score >= 80` gets A5/A6/A7, not only A3.
+  - `scripts/inspect.sh` now shows demo item `AI workflow 开源项目招募贡献者` as `A6 做工具/工作流原型`.
+
+- Fetcher stability:
+  - RSS/HN/arXiv already use timeout; text cleanup now applies to RSS/arXiv/HN/GitHub.
+  - Fetch runner now returns per-source status and count.
+  - Added deterministic test proving one failed source does not block a successful source.
+
+- Digest readability:
+  - Rows include `数据类型`.
+  - `demo://` rows are labeled `demo 验证数据`.
+  - Empty summaries render as `暂无摘要，不建议直接采用该条判断`.
+  - `为什么重要` includes score reason plus cleaned summary/fallback.
+
+### Required Commands
+
+- `python -m intelligence_hub status`
+  - Result: PASS
+  - Output version: `Qingbao Intelligence Hub v0.2.1`
+  - Counts before final fetch validation: `{'sources': 5, 'items': 44, 'scores': 44, 'actions': 0}`
+
+- `python -m intelligence_hub init-db`
+  - Result: PASS
+
+- `python -m intelligence_hub seed-demo`
+  - Result: PASS
+  - Output: `seeded/scored demo items: 15`
+
+- `python -m intelligence_hub digest --today`
+  - Result: PASS
+  - Output: generated `intelligence_hub/reports/daily/2026-05-31.md`
+
+- `python -m intelligence_hub fetch-once`
+  - Result: PASS with source degradation
+  - Output:
+    - `source: arxiv_ai status: failed items: 0`
+    - `source: hn_frontpage status: success items: 5`
+    - `source: mit_ai status: success items: 10`
+    - warning: `arxiv:arxiv_ai failed: HTTP Error 429: Unknown Error`
+    - total: `fetched/scored items: 15`
+  - Note: live public results are not guaranteed to be reproducible across days or network environments.
+
+- `python -m unittest discover -s tests`
+  - Result: PASS
+  - Output: `Ran 11 tests ... OK`
+
+- `bash scripts/run_once.sh`
+  - Result: PASS
+
+- `bash scripts/inspect.sh`
+  - Result: PASS
+  - Output version: `v0.2.1`
+  - Counts: `{'sources': 5, 'items': 44, 'scores': 44, 'actions': 0}`
+
+- `git diff --stat`
+  - Result: PASS
+  - Output: 14 tracked files changed, `119 insertions(+), 22 deletions(-)`.
+  - Note: new untracked files are not included in `git diff --stat`: `intelligence_hub/src/text.py`, `tests/test_fetchers.py`, `tests/test_text.py`.
+
+### Additional Checks
+
+- `python -m intelligence_hub digest --today --exclude-demo`
+  - Result: PASS
+  - `rg -n "Demo 条目|demo 验证数据" intelligence_hub/reports/daily/2026-05-31.md` showed `Demo 条目: 已排除`.
+
+- Final default report was regenerated with `python -m intelligence_hub digest --today`.
+
+### Failed Validation
+
+None. The arXiv 429 during `fetch-once` was a source-level public endpoint failure and was handled as a warning without failing the command.

@@ -56,7 +56,7 @@ def cmd_seed_demo(_: argparse.Namespace) -> int:
 
 def cmd_digest(args: argparse.Namespace) -> int:
     init_db()
-    path = generate_daily(today=args.today)
+    path = generate_daily(today=args.today, exclude_demo=args.exclude_demo)
     print(f"generated digest: {path}")
     return 0
 
@@ -66,8 +66,8 @@ def cmd_fetch_once(_: argparse.Namespace) -> int:
     _ensure_sources()
     items, warnings, counts = fetch_enabled_sources()
     count = _store_scored(items)
-    for source_name, source_count in counts.items():
-        print(f"source: {source_name}\titems: {source_count}")
+    for source_name, result in counts.items():
+        print(f"source: {source_name}\tstatus: {result['status']}\titems: {result['count']}")
     for warning in warnings:
         print(f"warning: {warning}")
     print(f"fetched/scored items: {count}")
@@ -113,6 +113,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("seed-demo").set_defaults(func=cmd_seed_demo)
     digest = sub.add_parser("digest")
     digest.add_argument("--today", action="store_true")
+    digest.add_argument("--exclude-demo", action="store_true", default=None)
     digest.set_defaults(func=cmd_digest)
     sub.add_parser("fetch-once").set_defaults(func=cmd_fetch_once)
     feedback = sub.add_parser("feedback")

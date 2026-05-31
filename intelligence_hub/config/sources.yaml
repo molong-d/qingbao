@@ -1,4 +1,5 @@
 {
+  "exclude_demo_in_digest": false,
   "sources": [
     {"name": "demo", "type": "demo", "enabled": true, "url": ""},
     {"name": "arxiv_ai", "type": "arxiv", "enabled": true, "url": "http://export.arxiv.org/api/query?search_query=cat:cs.AI&start=0&max_results=5"},

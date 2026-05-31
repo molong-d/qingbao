@@ -26,6 +26,11 @@
     "relevance": 0.25,
     "opportunity": 0.25
   },
+  "opportunity_action_thresholds": [
+    {"min": 90, "action": "A7 进入职业/投资/合作机会池"},
+    {"min": 80, "action": "A6 做工具/工作流原型"},
+    {"min": 70, "action": "A5 写成内容"}
+  ],
   "recency_decay": {"same_day": 1.0, "week": 0.85, "month": 0.65, "older": 0.4},
   "opportunity_keywords": ["招聘", "开源", "黑客松", "资助", "API", "工具", "原型", "合作", "早期", "beta", "grant", "workflow"],
   "action_thresholds": [

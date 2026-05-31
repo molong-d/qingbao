@@ -15,12 +15,14 @@ python -m intelligence_hub digest --today
 ```
 
 No Python package install is required for the MVP because it uses the standard library only.
+Demo items are verification data only. The default digest keeps them and labels them as `demo 验证数据`; use `python -m intelligence_hub digest --today --exclude-demo` to hide demo rows from the report.
 
 ```bash
 python -m intelligence_hub status
 python -m intelligence_hub init-db
 python -m intelligence_hub seed-demo
 python -m intelligence_hub digest --today
+python -m intelligence_hub digest --today --exclude-demo
 python -m intelligence_hub fetch-once
 python -m intelligence_hub opportunities --top 10
 python -m intelligence_hub feedback --item-id 1 --label track

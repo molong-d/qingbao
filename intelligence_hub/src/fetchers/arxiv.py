@@ -3,6 +3,7 @@ from urllib.request import urlopen
 import xml.etree.ElementTree as ET
 
 from intelligence_hub.src.models import Item, utc_now_iso
+from intelligence_hub.src.text import clean_text
 
 
 NS = {"atom": "http://www.w3.org/2005/Atom"}
@@ -22,8 +23,8 @@ def fetch(source: dict, timeout: int = 8) -> tuple[list[Item], list[str]]:
 
     items: list[Item] = []
     for entry in root.findall("atom:entry", NS)[:10]:
-        title = " ".join((entry.findtext("atom:title", default="", namespaces=NS) or "").split())
-        summary = " ".join((entry.findtext("atom:summary", default="", namespaces=NS) or "").split())
+        title = clean_text(entry.findtext("atom:title", default="", namespaces=NS))
+        summary = clean_text(entry.findtext("atom:summary", default="", namespaces=NS))
         url = ""
         for link in entry.findall("atom:link", NS):
             if link.attrib.get("href"):
