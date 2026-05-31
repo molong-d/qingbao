@@ -17,6 +17,7 @@ env/
 intelligence_hub/data/*.db
 intelligence_hub/data/*.sqlite
 intelligence_hub/data/*.sqlite3
+intelligence_hub/reports/daily/*.md
 
 # Secrets
 .env

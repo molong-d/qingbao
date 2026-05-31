@@ -1,0 +1,12 @@
+{
+  "keywords": [
+    "AI agent", "大模型", "多模态", "开源模型", "推理成本", "机器人", "具身智能",
+    "humanoid", "Web3", "稳定币", "RWA", "DeFi", "比特币 ETF", "美联储",
+    "利率", "英伟达", "OpenAI", "特斯拉", "政策监管", "个人自动化"
+  ],
+  "entities": [
+    "OpenAI", "NVIDIA", "Google DeepMind", "Meta", "Microsoft", "Tesla", "Figure AI",
+    "Boston Dynamics", "Ethereum", "Bitcoin", "Solana", "Circle", "Coinbase", "SEC",
+    "Federal Reserve", "Anthropic", "Hugging Face"
+  ]
+}

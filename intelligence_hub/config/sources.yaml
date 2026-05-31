@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {"name": "demo", "type": "demo", "enabled": true, "url": ""},
+    {"name": "arxiv_ai", "type": "arxiv", "enabled": true, "url": "http://export.arxiv.org/api/query?search_query=cat:cs.AI&start=0&max_results=5"},
+    {"name": "hn_frontpage", "type": "hackernews", "enabled": true, "url": "https://hacker-news.firebaseio.com/v0/topstories.json"},
+    {"name": "github_trending_ai", "type": "github", "enabled": false, "url": "https://api.github.com/search/repositories?q=topic:artificial-intelligence&sort=updated&order=desc&per_page=5"},
+    {"name": "mit_ai", "type": "rss", "enabled": true, "url": "https://www.technologyreview.com/feed/"}
+  ]
+}
